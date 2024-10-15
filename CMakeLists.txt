@@ -1,0 +1,48 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(GameEngine VERSION 1.0)
+
+set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD_REQUIRED True)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+file(GLOB_RECURSE SOURCE_FILES
+    ${CMAKE_SOURCE_DIR}/src/*.c)
+
+file(GLOB_RECURSE HEADER_FILES
+    ${CMAKE_SOURCE_DIR}/src/*.h)
+
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+
+list(APPEND CMAKE_MODULE_PATH
+    "${PROJECT_SOURCE_DIR}/cmake/modules/"
+)
+
+# OpenGL
+set(OpenGL_GL_PREFERENCE GLVND)
+find_package(OpenGL REQUIRED)
+
+# GLFW
+find_package(GLFW REQUIRED)
+message(STATUS "Found GLFW in ${GLFW_INCLUDE_DIR}")
+message(STATUS "GLFW library is ${GLFW_LIBRARY}")
+
+# GLAD
+add_library(GLAD "external/glad/glad.c")
+
+set(LIBS ${GLFW_LIBRARY} ${OPENGL_LIBRARY} GLAD)
+set(DIRS ${OPENGL_INCLUDE_DIR} ${GLFW_INCLUDE_DIR})
+
+include_directories(
+	"${CMAKE_SOURCE_DIR}/src"
+	"${CMAKE_SOURCE_DIR}/external"
+	"${CMAKE_SOURCE_DIR}/external/glad/include"
+	"${CMAKE_SOURCE_DIR}/external/glad/include/glad"
+    "/usr/include"
+    "/usr/include/libdrm"
+    ${LIBDRM_INCLUDE_DIRS}
+)
+
+target_link_libraries(${PROJECT_NAME} ${LIBS} ${LIBDRM_LIBRARIES})
+target_include_directories(${PROJECT_NAME} PUBLIC ${DIRS})
