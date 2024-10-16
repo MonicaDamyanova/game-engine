@@ -1,19 +1,32 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/time.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-int main() {
-    
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
+void processInput(GLFWwindow *window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, 1);
+}
+
+int main()
+{   
     glfwInit();
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
-    GLFWwindow* window = glfwCreateWindow(800, 800, "GOODNIGHT GAYMER", NULL, NULL);
-    if (window == NULL) {
+    GLFWwindow* window = glfwCreateWindow(800, 800, "Game Engine", NULL, NULL);
+    if (window == NULL)
+    {
         printf("Failed to create GLFW window.\n");
         glfwTerminate();
         return -1;
@@ -21,14 +34,132 @@ int main() {
 
     glfwMakeContextCurrent(window);
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
         printf("Failed to initialize GLAD\n");
         return -1;
     }
 
-    glfwSwapInterval(1); // Toggle for vsync
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    glViewport(0, 0, 800, 800);
+    // Shaders ============================================================ //
+   
+    char * vertexShaderFile = "../src/default.vert"; // TODO: Make better file path?
+    char * fragmentShaderFile = "../src/default.frag";
+
+    char * buffer = 0;
+    long length;
+    FILE * f = fopen (vertexShaderFile, "rb");
+
+    const char * vertexShaderSource = 0;
+    const char * fragmentShaderSource = 0;
+
+    if (f)
+    {
+        fseek(f, 0, SEEK_END);
+        length = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        buffer = malloc(length + 1);
+        if (buffer)
+        {
+            fread(buffer, 1, length, f);
+        }
+        fclose(f);
+        buffer[length] = '\0';
+    }
+
+    if (buffer)
+    {
+        vertexShaderSource = buffer;   
+    }
+    
+    f = fopen (fragmentShaderFile, "rb");
+    if (f)
+    {
+        fseek(f, 0, SEEK_END);
+        length = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        buffer = malloc(length + 1);
+        if (buffer)
+        {
+            fread(buffer, 1, length, f);
+        }
+        fclose(f);
+        buffer[length] = '\0';
+    }
+
+    if (buffer)
+    {
+        fragmentShaderSource = buffer;   
+    }
+
+    unsigned int vertexShader;
+    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+
+    int  success;
+    char infoLog[512];
+
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        printf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n%s\n", infoLog);
+    }
+
+    unsigned int fragmentShader;
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        printf("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n%s\n", infoLog);
+    }
+
+    unsigned int shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success)
+    {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        printf("ERROR::SHADER::PROGRAM::LINKING_FAILED\n%s\n", infoLog);
+    }
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    // Vertex data and attributes ========================================= //
+    
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f, // left  
+         0.5f, -0.5f, 0.0f, // right 
+         0.0f,  0.5f, 0.0f  // top   
+    }; 
+
+    unsigned int VBO, VAO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+    glBindVertexArray(0); 
+
+    // ==================================================================== //
+
+    glfwSwapInterval(1); // Toggle for vsync
 
     struct timeval before, now;
     int frames = 0;
@@ -36,7 +167,9 @@ int main() {
 
     gettimeofday(&before, NULL);
 
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(window))
+    {
+        processInput(window);
 
         // FPS tracking =================================================== //
         gettimeofday(&now, NULL);
@@ -45,19 +178,28 @@ int main() {
         before = now;
         frames++; 
 
-        if (delta >= 1) {
+        if (delta >= 1)
+        {
             printf("FPS: %d\n", frames);
             delta--;
             frames = 0;
         }
 
         // Rendering ====================================================== //
-        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO); 
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteProgram(shaderProgram);
 
     glfwTerminate();
 
