@@ -10,6 +10,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
+// TODO: Create a struct with all the inputs??
 void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -53,6 +54,8 @@ int main()
 
     const char * vertexShaderSource = 0;
     const char * fragmentShaderSource = 0;
+
+    // TODO: Create a function to handle shader loading.
 
     if (f)
     {
@@ -138,8 +141,8 @@ int main()
     
     float vertices[] = {
         -0.5f, -0.5f, 0.0f, // left  
-         0.5f, -0.5f, 0.0f, // right 
-         0.0f,  0.5f, 0.0f  // top   
+         //0.5f, -0.5f, 0.0f, // right 
+         //0.0f,  0.5f, 0.0f  // top   
     }; 
 
     unsigned int VBO, VAO;
@@ -155,7 +158,9 @@ int main()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
-    glBindVertexArray(0); 
+    glBindVertexArray(0);
+
+    int vertexPositionLocation = glGetUniformLocation(shaderProgram, "bPos");
 
     // ==================================================================== //
 
@@ -167,12 +172,17 @@ int main()
 
     gettimeofday(&before, NULL);
 
+    double xpos, ypos;
+
+    glPointSize(10);
+
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
+        glfwGetCursorPos(window, &xpos, &ypos);
 
         // FPS tracking =================================================== //
-        gettimeofday(&now, NULL);
+        gettimeofday(&now, NULL); // glfwGetTime()??
         
         delta += (now.tv_sec - before.tv_sec) + (now.tv_usec - before.tv_usec) / 1000000.0; // us * 10^6 -> s
         before = now;
@@ -185,14 +195,21 @@ int main()
             frames = 0;
         }
 
+        printf("%f %f\n", xpos, ypos);
+
+        // Update state =================================================== //
+        glUniform2f(vertexPositionLocation, -1 + xpos/400, 1 -ypos/400);
+        // TODO: Do not hardcode the dimensions of the window and do this
+        // calculation in the shader.
+
         // Rendering ====================================================== //
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO); 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        
+        glDrawArrays(GL_POINTS, 0, 3);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
