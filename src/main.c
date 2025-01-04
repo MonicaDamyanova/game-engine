@@ -22,6 +22,31 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, 1);
 }
 
+char * loadShaderSource(FILE * f)
+{
+    char * buffer = 0;
+    long length;
+    
+    if (!f) return NULL;  
+
+    fseek(f, 0, SEEK_END);
+    length = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    buffer = malloc(length + 1);
+    if (buffer)
+    {
+        fread(buffer, 1, length, f);
+    }
+    fclose(f);
+    buffer[length] = '\0';
+
+    if (buffer)
+    {
+        return buffer;   
+    }
+    return NULL;
+}
+
 int main()
 {   
     glfwInit();
@@ -53,53 +78,15 @@ int main()
     char * vertexShaderFile = "../src/default.vert"; // TODO: Make better file path?
     char * fragmentShaderFile = "../src/default.frag";
 
-    char * buffer = 0;
-    long length;
-    FILE * f = fopen (vertexShaderFile, "rb");
-
     const char * vertexShaderSource = 0;
     const char * fragmentShaderSource = 0;
-
-    // TODO: Create a function to handle shader loading.
-
-    if (f)
-    {
-        fseek(f, 0, SEEK_END);
-        length = ftell(f);
-        fseek(f, 0, SEEK_SET);
-        buffer = malloc(length + 1);
-        if (buffer)
-        {
-            fread(buffer, 1, length, f);
-        }
-        fclose(f);
-        buffer[length] = '\0';
-    }
-
-    if (buffer)
-    {
-        vertexShaderSource = buffer;   
-    }
+    
+    FILE * f = fopen (vertexShaderFile, "rb");
+    vertexShaderSource = loadShaderSource(f);
     
     f = fopen (fragmentShaderFile, "rb");
-    if (f)
-    {
-        fseek(f, 0, SEEK_END);
-        length = ftell(f);
-        fseek(f, 0, SEEK_SET);
-        buffer = malloc(length + 1);
-        if (buffer)
-        {
-            fread(buffer, 1, length, f);
-        }
-        fclose(f);
-        buffer[length] = '\0';
-    }
+    fragmentShaderSource = loadShaderSource(f);   
 
-    if (buffer)
-    {
-        fragmentShaderSource = buffer;   
-    }
 
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
