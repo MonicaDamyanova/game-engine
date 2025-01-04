@@ -5,9 +5,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+int windowWidth = 800;
+int windowHeight = 800;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
+    windowWidth = width;
+    windowHeight = height;
 }
 
 // TODO: Create a struct with all the inputs??
@@ -25,7 +30,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
-    GLFWwindow* window = glfwCreateWindow(800, 800, "Game Engine", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Game Engine", NULL, NULL);
     if (window == NULL)
     {
         printf("Failed to create GLFW window.\n");
@@ -195,10 +200,10 @@ int main()
             frames = 0;
         }
 
-        printf("%f %f\n", xpos, ypos);
+        // printf("%f %f\n", xpos, ypos);
 
         // Update state =================================================== //
-        glUniform2f(vertexPositionLocation, -1 + xpos/400, 1 -ypos/400);
+        glUniform2f(vertexPositionLocation, -1 + xpos/(windowWidth / 2.0), 1 -ypos/(windowHeight / 2.0));
         // TODO: Do not hardcode the dimensions of the window and do this
         // calculation in the shader.
 
