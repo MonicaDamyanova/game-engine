@@ -4,6 +4,7 @@ project(GameEngine VERSION 1.0)
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED True)
+set (CMAKE_CXX_FLAGS "-Wall -Winvalid-pch -Wnon-virtual-dtor -Wextra -Werror -Wno-unused-parameter")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -31,7 +32,10 @@ message(STATUS "GLFW library is ${GLFW_LIBRARY}")
 # GLAD
 add_library(GLAD "external/glad/glad.c")
 
-set(LIBS ${GLFW_LIBRARY} ${OPENGL_LIBRARY} GLAD)
+# CGLM
+add_subdirectory(external/cglm/ EXCLUDE_FROM_ALL)
+
+set(LIBS ${GLFW_LIBRARY} ${OPENGL_LIBRARY} GLAD cglm_headers)
 set(DIRS ${OPENGL_INCLUDE_DIR} ${GLFW_INCLUDE_DIR})
 
 include_directories(
@@ -39,8 +43,9 @@ include_directories(
 	"${CMAKE_SOURCE_DIR}/external"
 	"${CMAKE_SOURCE_DIR}/external/glad/include"
 	"${CMAKE_SOURCE_DIR}/external/glad/include/glad"
+	"${CMAKE_SOURCE_DIR}/external/cglm"
     "/usr/include"
-    "/usr/include/libdrm"
+    "/usr/include/libdrm" # May remove
     ${LIBDRM_INCLUDE_DIRS}
 )
 
