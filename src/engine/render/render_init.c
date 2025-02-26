@@ -14,7 +14,12 @@ static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     global.render.width = width;
     global.render.height = height;
 
-    // Update projection matrix.
+    glm_ortho(0.0f, (float) width, 0.0f, (float) height, -2.0f, 2.0f, global.render.projection);
+
+    glUniformMatrix4fv(
+        glGetUniformLocation(global.render.shader_default, "projection"),
+        1, GL_FALSE, &global.render.projection[0][0]
+    );
 }
 
 GLFWwindow* render_init_window(uint32_t width, uint32_t height) {
@@ -50,14 +55,14 @@ GLFWwindow* render_init_window(uint32_t width, uint32_t height) {
 }
 
 void render_init_shaders(Render_State_Internal* state) {
-    state->shader_default = render_shader_create("../shaders/default.vert", "../shaders/default.frag");
+    global.render.shader_default = render_shader_create("../shaders/default.vert", "../shaders/default.frag");
 
-    glm_ortho(0.0f, (float) global.render.width, 0.0f, (float) global.render.height, -2.0f, 2.0f, state->projection);
+    glm_ortho(0.0f, (float) global.render.width, 0.0f, (float) global.render.height, -2.0f, 2.0f, global.render.projection);
 
-    glUseProgram(state->shader_default);
+    glUseProgram(global.render.shader_default);
     glUniformMatrix4fv(
-        glGetUniformLocation(state->shader_default, "projection"),
-        1, GL_FALSE, &state->projection[0][0]
+        glGetUniformLocation(global.render.shader_default, "projection"),
+        1, GL_FALSE, &global.render.projection[0][0]
     );
 }
 

@@ -32,8 +32,9 @@ message(STATUS "GLFW library is ${GLFW_LIBRARY}")
 # GLAD
 add_library(GLAD "external/glad/glad.c")
 
-# CGLM
+# CGLM 
 add_subdirectory(external/cglm/ EXCLUDE_FROM_ALL)
+# TODO: Just install it from the AUR and remove as submodule.
 
 set(LIBS ${GLFW_LIBRARY} ${OPENGL_LIBRARY} GLAD cglm_headers)
 set(DIRS ${OPENGL_INCLUDE_DIR} ${GLFW_INCLUDE_DIR})

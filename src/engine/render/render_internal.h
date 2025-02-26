@@ -15,9 +15,9 @@ typedef struct render_state_internal {
 } Render_State_Internal;
 
 GLFWwindow* render_init_window(uint32_t width, uint32_t height);
-void render_init_quad(uint32_t* vao, uint32_t* vbo, uint32_t* ebo);
-void render_init_color_texture(uint32_t* texture);
-void render_init_shaders(Render_State_Internal* state);
-uint32_t render_shader_create(const char* path_vert, const char* path_frag);
+void render_init_quad(uint32_t *vao, uint32_t *vbo, uint32_t *ebo);
+void render_init_color_texture(uint32_t *texture);
+void render_init_shaders(Render_State_Internal *state);
+uint32_t render_shader_create(const char *path_vert, const char *path_frag);
 
 #endif

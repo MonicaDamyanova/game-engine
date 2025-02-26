@@ -8,8 +8,8 @@
 static Render_State_Internal state = {0};
 
 void render_init(void) {
-    global.render.width = 800;
-    global.render.height = 800;
+    global.render.width = 1000;
+    global.render.height = 700;
     global.render.window = render_init_window(global.render.width, global.render.height);
 
     render_init_quad(&state.vao_quad, &state.vbo_quad, &state.ebo_quad);
@@ -28,7 +28,7 @@ void render_end(void) {
 }
 
 void render_quad(vec2 pos, vec2 size, vec4 color) {
-    glUseProgram(state.shader_default);
+    glUseProgram(global.render.shader_default);
 
     mat4 model;
     glm_mat4_identity(model);
@@ -39,8 +39,8 @@ void render_quad(vec2 pos, vec2 size, vec4 color) {
     glm_translate(model, translate);
     glm_scale(model, scale);
 
-    glUniformMatrix4fv(glGetUniformLocation(state.shader_default, "model"), 1, GL_FALSE, &model[0][0]);
-    glUniform4fv(glGetUniformLocation(state.shader_default, "color"), 1, color);
+    glUniformMatrix4fv(glGetUniformLocation(global.render.shader_default, "model"), 1, GL_FALSE, &model[0][0]);
+    glUniform4fv(glGetUniformLocation(global.render.shader_default, "color"), 1, color);
 
     glBindVertexArray(state.vao_quad);
 
