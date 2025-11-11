@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 
 #include "engine/global.h"
+#include "engine/logger.h"
 
 // TODO: Create a struct with all the inputs??
 void processInput(GLFWwindow *window)

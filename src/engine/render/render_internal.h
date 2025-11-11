@@ -1,9 +1,9 @@
 #ifndef RENDER_INTERNAL_H
 #define RENDER_INTERNAL_H
 
-#include <GLFW/glfw3.h>
-
 #include "render.h"
+
+#include <GLFW/glfw3.h>
 
 typedef struct render_state_internal {
     uint32_t vao_quad;

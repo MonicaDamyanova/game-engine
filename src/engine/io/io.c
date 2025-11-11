@@ -1,9 +1,10 @@
+#include "io.h"
+
+#include "../logger.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-
-#include "../util.h"
-#include "io.h"
 
 // 20MiB, but can depend on target platform.
 #define IO_READ_CHUNK_SIZE 2097152
@@ -17,7 +18,8 @@ File io_file_read(const char *path) {
     FILE *fp = fopen(path, "rb");
 
     if(fp == NULL || ferror(fp)) {
-        ERROR_RETURN(file, IO_READ_ERROR_GENERAL, path, errno);
+        ERROR(IO_READ_ERROR_GENERAL, path, errno);
+        return file;
     }
 
     char *data = NULL;
@@ -30,15 +32,18 @@ File io_file_read(const char *path) {
         if (used + IO_READ_CHUNK_SIZE + 1 > size) {
             size = used + IO_READ_CHUNK_SIZE + 1;
 
+
             if (size <= used) {
                 free(data);
-                ERROR_RETURN(file, "Input file too large: %s\n", path);
+                ERROR("Input file too large: %s\n", path);
+                return file;
             }
 
             tmp = realloc(data, size);
             if (!tmp) {
                 free(data);
-                ERROR_RETURN(file, IO_READ_ERROR_MEMORY, path);
+                ERROR(IO_READ_ERROR_MEMORY, path);
+                return file;
             }
             data = tmp;
         }
@@ -52,13 +57,15 @@ File io_file_read(const char *path) {
 
     if (ferror(fp)) {
         free(data);
-        ERROR_RETURN(file, IO_READ_ERROR_GENERAL, path, errno);
+        ERROR(IO_READ_ERROR_GENERAL, path, errno);
+        return file;
     }
 
     tmp = realloc(data, used + 1);
     if (!tmp) {
         free(data);
-        ERROR_RETURN(file, IO_READ_ERROR_MEMORY, path);
+        ERROR(IO_READ_ERROR_MEMORY, path);
+        return file;
     }
     data = tmp;
     data[used] = 0; // null terminator

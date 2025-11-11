@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <cglm/cglm.h>
 
-#include "../util.h"
+#include "../logger.h"
 #include "../global.h"
 
 #include "render.h"
@@ -33,23 +33,23 @@ GLFWwindow* render_init_window(uint32_t width, uint32_t height) {
     if (window == NULL)
     {
         glfwTerminate();
-        ERROR_EXIT("Failed to create GLFW window.\n");
+        FATAL("Failed to create GLFW window."); exit(1);
     }
 
     glfwMakeContextCurrent(window);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        ERROR_EXIT("Failed to initialize GLAD.\n");
+        FATAL("Failed to initialize GLAD."); exit(1);
     }
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     glfwSetWindowAttrib(window, GLFW_FLOATING, GLFW_TRUE);
 
-    printf("Vendor:   %s\n", glGetString(GL_VENDOR));
-    printf("Renderer: %s\n", glGetString(GL_RENDERER));
-    printf("Version:  %s\n", glGetString(GL_VERSION));
+    INFO("Vendor:   %s", glGetString(GL_VENDOR));
+    INFO("Renderer: %s", glGetString(GL_RENDERER));
+    INFO("Version:  %s", glGetString(GL_VERSION));
 
     return window;
 }

@@ -1,21 +1,22 @@
 #include <glad/glad.h>
 #include <stdio.h>
 
-#include "../util.h"
+#include "../logger.h"
 #include "../io/io.h"
+
 #include "render_internal.h"
 
 uint32_t render_shader_create(const char* path_vert, const char* path_frag) {
     int success;
     char log[512];
 
-    printf("Attempt reading %s\n", path_vert);
+    INFO("Attempt reading %s.", path_vert);
     File file_vertex = io_file_read(path_vert);
-    printf("Completed io_file_read successfully\n");
+    INFO("Completed io_file_read successfully.");
     if (!file_vertex.is_valid) {
-        ERROR_EXIT("Error reading shader: %s\n", path_vert);
+        FATAL("Error reading shader: %s\n", path_vert); exit(1);
     }
-    printf("Successfully read %s\n", path_vert);
+    INFO("Successfully read %s.", path_vert);
 
     uint32_t vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, (const char* const *)&file_vertex, NULL);
@@ -25,12 +26,12 @@ uint32_t render_shader_create(const char* path_vert, const char* path_frag) {
     if(!success)
     {
         glGetShaderInfoLog(vertex_shader, 512, NULL, log);
-        ERROR_EXIT("Error compiling vertex shader.\n%s\n", log);
+        FATAL("Error compiling vertex shader.\n%s", log); exit(1);
     }
 
     File file_fragment = io_file_read(path_frag);
     if (!file_fragment.is_valid) {
-        ERROR_EXIT("Error reading shader: %s\n", path_frag);
+        FATAL("Error reading shader: %s", path_frag); exit(1);
     }
 
 
@@ -42,7 +43,7 @@ uint32_t render_shader_create(const char* path_vert, const char* path_frag) {
     if(!success)
     {
         glGetShaderInfoLog(fragment_shader, 512, NULL, log);
-        printf("Error compiling fragment shader.\n%s\n", log);
+        WARN("Error compiling fragment shader.\n%s", log);
     }
 
     uint32_t shader_program = glCreateProgram();
@@ -54,7 +55,7 @@ uint32_t render_shader_create(const char* path_vert, const char* path_frag) {
     if (!success)
     {
         glGetProgramInfoLog(shader_program, 512, NULL, log);
-        ERROR_EXIT("Error linking shader program.\n%s\n", log);
+        FATAL("Error linking shader program.\n%s", log); exit(1);
     }
 
     free(file_vertex.data);
@@ -63,7 +64,7 @@ uint32_t render_shader_create(const char* path_vert, const char* path_frag) {
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
-    printf("Successfully created a shader program\n");
+    INFO("Successfully created a shader program.");
 
     return shader_program;
 }

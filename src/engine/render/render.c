@@ -2,6 +2,7 @@
 #include <cglm/cglm.h>
 
 #include "../global.h"
+
 #include "render.h"
 #include "render_internal.h"
 
