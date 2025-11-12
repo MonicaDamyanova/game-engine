@@ -7,6 +7,7 @@
 
 #include "engine/global.h"
 #include "engine/logger.h"
+#include "engine/memory.h"
 
 // TODO: Create a struct with all the inputs??
 void processInput(GLFWwindow *window)
@@ -17,6 +18,7 @@ void processInput(GLFWwindow *window)
 
 int main(int argc, char* argv[])
 {   
+    memory_init();
     render_init(); 
     
     glfwSwapInterval(1); // Toggle for vsync
@@ -26,6 +28,8 @@ int main(int argc, char* argv[])
     float delta = 0;
 
     gettimeofday(&before, NULL);
+
+    printf("%s", memory_usage_str());
 
     while (!glfwWindowShouldClose(global.render.window))
     {
@@ -63,6 +67,7 @@ int main(int argc, char* argv[])
     //glDeleteProgram(shaderProgram);
 
     glfwTerminate();
+    memory_shutdown();
 
     return 0;
 }
