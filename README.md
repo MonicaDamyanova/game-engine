@@ -3,6 +3,10 @@
 A game engine for creating games with procedural animation. 
 Written using OpenGL.
 
+## Required Libraries
+- OpenGL (mesa)
+- GLFW
+
 ## Compilation
 
 1. Create the build directory with `mkdir build`
@@ -10,6 +14,12 @@ Written using OpenGL.
 1. Call the build system with `cmake --build .`
 
 ## TODO
+- Application Layer
+- Events
+- Input
 - Reorganize global variables
-- Optimize draw calls
-- Sprite rendering
+- Improve renderer
+- Textures
+- Math library (?)
+- Better shaders
+
