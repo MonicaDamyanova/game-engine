@@ -14,6 +14,7 @@ Written using OpenGL.
 1. Call the build system with `cmake --build .`
 
 ## TODO
+- Improve memory management so that previous sizes don't need to be known
 - Application Layer
 - Events
 - Input

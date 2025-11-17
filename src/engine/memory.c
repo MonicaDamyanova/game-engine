@@ -13,7 +13,8 @@ struct memory_statistics {
 
 static const char * memory_tag_strings[MEMORY_TAG_MAX_TAGS] = {
     "NONE ",
-    "ARRAY"
+    "ARRAY",
+    "FILE I/O"
 };
 
 static struct memory_statistics stats;
@@ -38,6 +39,17 @@ void * memory_allocate(size_t size, memory_tag tag) {
     return block;
 }
 
+// if realloc is passed a null pointer, it acts like malloc
+void * memory_reallocate(void * ptr, size_t old_size, size_t new_size, memory_tag tag) {
+    if (tag == MEMORY_TAG_NONE) {
+        WARN("memory_reallocate() was called with MEMORY_TAG_NONE.");
+    }
+    stats.total_allocated += new_size - old_size;
+    stats.tag_allocations[tag] += new_size - old_size;
+
+    return realloc(ptr, new_size);
+}
+
 void memory_free(void * block, size_t size, memory_tag tag) {
     if (tag == MEMORY_TAG_NONE) {
         WARN("memory_free() was called with MEMORY_TAG_NONE.");
@@ -50,15 +62,15 @@ void memory_free(void * block, size_t size, memory_tag tag) {
 }
 
 void * memory_zero(void * block, size_t size) {
-    memset(block, 0, size);
+    return memset(block, 0, size);
 }
 
 void * memory_copy(void * dest, const void * source, size_t size) {
-    memcpy(dest, source, size);
+    return memcpy(dest, source, size);
 }
 
 void * memory_set(void * dest, int32_t value, size_t size) {
-    memset(dest, value, size);
+    return memset(dest, value, size);
 }
 
 // Temporary

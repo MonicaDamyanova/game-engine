@@ -26,6 +26,7 @@ File io_file_read(const char *path) {
     char *data = NULL;
     char *tmp;
     size_t used = 0;
+    size_t old_size = 0;
     size_t size = 0;
     size_t n;
 
@@ -33,21 +34,23 @@ File io_file_read(const char *path) {
         if (used + IO_READ_CHUNK_SIZE + 1 > size) {
             size = used + IO_READ_CHUNK_SIZE + 1;
 
-
             if (size <= used) {
-                free(data);
+                memory_free(data, old_size, MEMORY_TAG_FILE_IO);
                 ERROR("Input file too large: %s\n", path);
                 return file;
             }
 
-            tmp = realloc(data, size);
+            //tmp = realloc(data, size);
+            tmp = memory_reallocate(data, old_size, size, MEMORY_TAG_FILE_IO);
             if (!tmp) {
-                free(data);
+                memory_free(data, size, MEMORY_TAG_FILE_IO);
                 ERROR(IO_READ_ERROR_MEMORY, path);
                 return file;
             }
             data = tmp;
         }
+
+        old_size = size;
 
         n = fread(data + used, 1, IO_READ_CHUNK_SIZE, fp);
         if (n == 0) 
@@ -57,14 +60,15 @@ File io_file_read(const char *path) {
     }
 
     if (ferror(fp)) {
-        free(data);
+        memory_free(data, size, MEMORY_TAG_FILE_IO);
         ERROR(IO_READ_ERROR_GENERAL, path, errno);
         return file;
     }
 
-    tmp = realloc(data, used + 1);
+    //tmp = realloc(data, used + 1);
+    tmp = memory_reallocate(data, size, used + 1, MEMORY_TAG_FILE_IO);
     if (!tmp) {
-        free(data);
+        memory_free(data, used + 1, MEMORY_TAG_FILE_IO);
         ERROR(IO_READ_ERROR_MEMORY, path);
         return file;
     }
