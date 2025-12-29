@@ -41,6 +41,13 @@ set(DIRS ${OPENGL_INCLUDE_DIR} ${GLFW_INCLUDE_DIR})
 
 include_directories(
 	"${CMAKE_SOURCE_DIR}/src"
+	"${CMAKE_SOURCE_DIR}/src/engine/core"
+	"${CMAKE_SOURCE_DIR}/src/engine/core/filesystem"
+	"${CMAKE_SOURCE_DIR}/src/engine/core/input"
+	"${CMAKE_SOURCE_DIR}/src/engine/core/logger"
+	"${CMAKE_SOURCE_DIR}/src/engine/core/memory"
+	"${CMAKE_SOURCE_DIR}/src/engine/core/window"
+	"${CMAKE_SOURCE_DIR}/src/engine/renderer"
 	"${CMAKE_SOURCE_DIR}/external"
 	"${CMAKE_SOURCE_DIR}/external/glad/include"
 	"${CMAKE_SOURCE_DIR}/external/glad/include/glad"
@@ -50,5 +57,5 @@ include_directories(
     ${LIBDRM_INCLUDE_DIRS}
 )
 
-target_link_libraries(${PROJECT_NAME} ${LIBS} ${LIBDRM_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${LIBS} ${LIBDRM_LIBRARIES} m)
 target_include_directories(${PROJECT_NAME} PUBLIC ${DIRS})
