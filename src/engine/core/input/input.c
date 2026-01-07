@@ -27,7 +27,8 @@ InputState input_state = {0};
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key < 0 || key >= GLFW_KEY_LAST + 1) return;
     
-    DEBUG("Key pressed");
+    DEBUG("Key pressed: %s | Scancode: %d | Action: %d | Mods: %d", glfwGetKeyName(key, 0), scancode, action, mods);
+
     if (action == GLFW_PRESS) {
         input_state.down[key] = true;
         input_state.pressed[key] = true;

@@ -12,7 +12,7 @@ struct memory_statistics {
 };
 
 static const char * memory_tag_strings[MEMORY_TAG_MAX_TAGS] = {
-    "NONE ",
+    "NONE",
     "ARRAY",
     "FILE I/O"
 };

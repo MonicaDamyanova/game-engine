@@ -14,6 +14,7 @@ typedef struct {
 } Mesh;
 
 
+
 bool render_init(GLFWwindow* window);
 void render_destroy();
 
