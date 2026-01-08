@@ -37,44 +37,7 @@ window_config w_conf = {
 
 Mesh square = {0};
 
-void init_square(Mesh * mesh) {
-    DEBUG("Initializing the square.");
-
-    DEBUG("Memory address of VAO: %d", &mesh->vao);
-    DEBUG("Memory address of VBO: %d", &mesh->vbo);
-    DEBUG("Memory address of EBO: %d", &mesh->ebo);
-
-    glGenVertexArrays(1, &mesh->vao);
-    glGenBuffers(1, &mesh->vbo);
-    glGenBuffers(1, &mesh->ebo);
-
-    DEBUG("Generated buffers and arrays.");
-
-    glBindVertexArray(mesh->vao);
-
-    glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    DEBUG("Added buffer data.");
-
-    // xyz
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), NULL);
-    glEnableVertexAttribArray(0);
-    DEBUG("Described the XYZ data for the VAO.");
-
-    // uv
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    DEBUG("Described the UV data for the VAO.");
-
-    glBindVertexArray(0);
-}
-
-int main(int argc, char* argv[])
-{  
+int main(int argc, char* argv[]) {  
     glfwInit();
     memory_init();
     
@@ -94,7 +57,7 @@ int main(int argc, char* argv[])
     float delta = 0;
     gettimeofday(&before, NULL);
 
-    init_square(&square);
+    render_upload_mesh(&square, vertices, indices, sizeof(vertices), sizeof(indices));
 
     INFO("Initialized Square");
 
@@ -128,7 +91,6 @@ int main(int argc, char* argv[])
 
         // Update state =================================================== //
         transform.rotation += 0.01;
-
         transform_matrix(&transform, matrix);
 
         // Rendering ====================================================== //

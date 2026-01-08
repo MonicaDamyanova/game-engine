@@ -20,20 +20,6 @@ struct render_state {
     mat4 projection;
 };
 
-
-//    x     y     z     u     v
-static float vertices[] = {
-    0.5,  0.5,  0.0,  0.0,  0.0,
-    0.5, -0.5,  0.0,  0.0,  1.0,
-    -0.5, -0.5,  0.0,  1.0,  1.0,
-    -0.5,  0.5,  0.0,  1.0 , 0.0
-};
-
-static uint32_t indices[] = {
-    0, 1, 3,
-    1, 2, 3
-};
-
 static struct render_state state = {0};
 
 uint32_t render_shader_create(const char* path_vert, const char* path_frag) {
@@ -143,8 +129,7 @@ bool render_init(GLFWwindow* window) {
         glGetUniformLocation(state.shader_default, "projection"),
         1, GL_FALSE, &state.projection[0][0]
     );
-    //
-    //
+
     // Textures
     glGenTextures(1, &state.texture_colour);
     glBindTexture(GL_TEXTURE_2D, state.texture_colour);
@@ -161,6 +146,42 @@ bool render_init(GLFWwindow* window) {
     return true;
 }
 
+void render_upload_mesh(Mesh * mesh, float * vertices, uint32_t * indices, uint32_t vertices_size, uint32_t indices_size) {
+    DEBUG("Initializing the square.");
+
+    DEBUG("Memory address of VAO: %d", &mesh->vao);
+    DEBUG("Memory address of VBO: %d", &mesh->vbo);
+    DEBUG("Memory address of EBO: %d", &mesh->ebo);
+
+    glGenVertexArrays(1, &mesh->vao);
+    glGenBuffers(1, &mesh->vbo);
+    glGenBuffers(1, &mesh->ebo);
+
+    DEBUG("Generated buffers and arrays.");
+
+    glBindVertexArray(mesh->vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo);
+    glBufferData(GL_ARRAY_BUFFER, vertices_size, vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_size, indices, GL_STATIC_DRAW);
+
+    DEBUG("Added buffer data.");
+
+    // xyz
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), NULL);
+    glEnableVertexAttribArray(0);
+    DEBUG("Described the XYZ data for the VAO.");
+
+    // uv
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    DEBUG("Described the UV data for the VAO.");
+
+    glBindVertexArray(0);
+}
+
 void render_mesh(Mesh * mesh, mat4 * transform) {
     vec4 colour = {1, 1, 1, 0};
 
@@ -173,16 +194,6 @@ void render_mesh(Mesh * mesh, mat4 * transform) {
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 
     glBindVertexArray(0);
-}
-
-void render_begin(void) {
-    glClearColor(0.5, 0.5, 0.3, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
-}
-
-void render_end(GLFWwindow * window) {
-    glfwSwapBuffers(window);
-    glfwPollEvents();
 }
 
 uint32_t render_get_height() {
