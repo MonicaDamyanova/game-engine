@@ -13,6 +13,7 @@
 #include "render.h"
 #include "input.h"
 #include "transform.h"
+#include "texture.h"
 
 //    x     y     z     u     v
 float vertices[] = {
@@ -68,6 +69,8 @@ int main(int argc, char* argv[]) {
     };
 
     mat4 matrix;
+
+    //Texture texture = texture_load();
 
     printf("%s", memory_usage_str());
 

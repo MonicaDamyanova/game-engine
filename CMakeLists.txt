@@ -54,6 +54,7 @@ include_directories(
 	"${CMAKE_SOURCE_DIR}/external/glad/include"
 	"${CMAKE_SOURCE_DIR}/external/glad/include/glad"
 	"${CMAKE_SOURCE_DIR}/external/cglm"
+	"${CMAKE_SOURCE_DIR}/external/stb"
     "/usr/include"
     "/usr/include/libdrm" # May remove
     ${LIBDRM_INCLUDE_DIRS}
