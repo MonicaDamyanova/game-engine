@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
         transform_matrix(&transform, matrix);
 
         // Rendering ====================================================== //
-        glClearColor(100, 100, 100, 1);
+        glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
         texture_bind(&texture, 0);

@@ -15,7 +15,8 @@ typedef struct input_state {
     uint8_t released[GLFW_KEY_LAST + 1];
 
     // mouse
-    int16_t mouse_x, mouse_y;
+    double mouse_x, mouse_y;
+    double mouse_dx, mouse_dy;
     uint8_t mouse_down[8];
     uint8_t mouse_pressed[8];
     uint8_t mouse_released[8];
@@ -38,8 +39,18 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
 }
 
+static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
+    DEBUG("Mouse at: %f, %f", xpos, ypos);
+    input_state.mouse_dx = ypos - input_state.mouse_x;
+    input_state.mouse_dy = ypos - input_state.mouse_y;
+    input_state.mouse_x = xpos;
+    input_state.mouse_y = ypos;
+}
+
+
 void input_init(GLFWwindow * window) {
     glfwSetKeyCallback(window, key_callback);
+    glfwSetCursorPosCallback(window, cursor_position_callback);
 }
 
 // Keyboard
@@ -62,9 +73,11 @@ void input_reset() {
 
 // Mouse
 void input_mouse_position(double * x, double * y) {
-
+    *x = input_state.mouse_x; 
+    *y = input_state.mouse_y; 
 }
 
 void input_mouse_delta(double * dx, double * dy) {
-
+    *dx = input_state.mouse_dx;
+    *dy = input_state.mouse_dy;  
 }
