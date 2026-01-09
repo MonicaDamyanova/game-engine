@@ -14,7 +14,6 @@ Written using OpenGL.
 1. Call the build system with `cmake --build .`
 
 ## TODO
-- Textures
 - Improve memory management so that previous sizes don't need to be known
 - Events
 - Improve renderer

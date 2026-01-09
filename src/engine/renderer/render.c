@@ -139,6 +139,10 @@ bool render_init(GLFWwindow* window) {
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+    //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+
     INFO("Vendor:   %s", glGetString(GL_VENDOR));
     INFO("Renderer: %s", glGetString(GL_RENDERER));
     INFO("Version:  %s", glGetString(GL_VERSION));
@@ -189,8 +193,8 @@ void render_mesh(Mesh * mesh, mat4 * transform) {
     glUniform4fv(glGetUniformLocation(state.shader_default, "color"), 1, colour);
 
     glBindVertexArray(mesh->vao);
-
-    glBindTexture(GL_TEXTURE_2D, state.texture_colour);
+    
+    //glBindTexture(GL_TEXTURE_2D, state.texture_colour);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 
     glBindVertexArray(0);

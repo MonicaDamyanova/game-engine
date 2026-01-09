@@ -50,13 +50,14 @@ int main(int argc, char* argv[]) {
     render_init(window); 
     input_init(window); 
     
-    glfwSwapInterval(1); // Toggle for vsync
+    glfwSwapInterval(0); // Toggle for vsync
 
     // Game states 
-    struct timeval before, now;
     int frames = 0;
-    float delta = 0;
-    gettimeofday(&before, NULL);
+    double delta = 0;
+    double dt = 0;
+    double current_time = glfwGetTime();
+    double last_time = current_time;
 
     render_upload_mesh(&square, vertices, indices, sizeof(vertices), sizeof(indices));
 
@@ -70,7 +71,7 @@ int main(int argc, char* argv[]) {
 
     mat4 matrix;
 
-    //Texture texture = texture_load();
+    Texture texture = texture_load("../assets/TEST_Fox-001.png");
 
     printf("%s", memory_usage_str());
 
@@ -79,10 +80,10 @@ int main(int argc, char* argv[]) {
         if (input_key_down(GLFW_KEY_ESCAPE)) glfwSetWindowShouldClose(window, 1);
 
         // FPS tracking =================================================== //
-        gettimeofday(&now, NULL); // glfwGetTime()??
-        
-        delta += (now.tv_sec - before.tv_sec) + (now.tv_usec - before.tv_usec) / 1000000.0; // us * 10^6 -> s
-        before = now;
+        current_time = glfwGetTime();
+        dt = current_time - last_time;
+        delta += dt;
+        last_time = current_time;
         frames++; 
 
         if (delta >= 1) {
@@ -93,13 +94,14 @@ int main(int argc, char* argv[]) {
         }
 
         // Update state =================================================== //
-        transform.rotation += 0.01;
+        transform.rotation += 1 * dt;
         transform_matrix(&transform, matrix);
 
         // Rendering ====================================================== //
-        glClearColor(0, 0, 0, 1);
+        glClearColor(100, 100, 100, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        texture_bind(&texture, 0);
         render_mesh(&square, &matrix); 
         
         glfwSwapBuffers(window);
