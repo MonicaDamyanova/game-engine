@@ -50,6 +50,7 @@ include_directories(
 	"${CMAKE_SOURCE_DIR}/src/engine/core/transform"
 	"${CMAKE_SOURCE_DIR}/src/engine/renderer"
 	"${CMAKE_SOURCE_DIR}/src/engine/physics"
+	"${CMAKE_SOURCE_DIR}/src/engine/debug"
 	"${CMAKE_SOURCE_DIR}/external"
 	"${CMAKE_SOURCE_DIR}/external/glad/include"
 	"${CMAKE_SOURCE_DIR}/external/glad/include/glad"

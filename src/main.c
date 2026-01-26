@@ -14,6 +14,7 @@
 #include "input.h"
 #include "transform.h"
 #include "texture.h"
+#include "debug_font.h"
 
 //    x     y     z     u     v
 float vertices[] = {
@@ -49,6 +50,7 @@ int main(int argc, char* argv[]) {
     // Render initialization
     render_init(window); 
     input_init(window); 
+    debug_font_init();
     
     glfwSwapInterval(0); // Toggle for vsync
 
@@ -65,7 +67,7 @@ int main(int argc, char* argv[]) {
 
     Transform2D transform = {
         .position = {500, 500},
-        .scale = {100, 100},
+        .scale = {50, 50},
         .rotation = 0.0
     };
 
@@ -94,15 +96,25 @@ int main(int argc, char* argv[]) {
         }
 
         // Update state =================================================== //
-        transform.rotation += 1 * dt;
-        transform_matrix(&transform, matrix);
+        //transform.rotation += 1 * dt;
+        //transform_matrix(&transform, matrix);
 
         // Rendering ====================================================== //
-        glClearColor(0, 0, 0, 1);
+        glClearColor(0.6, 0.6, 0.6, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        texture_bind(&texture, 0);
-        render_mesh(&square, &matrix); 
+        debug_draw_char(&square, &transform, 'H');
+        transform.position[0] += 50;
+        debug_draw_char(&square, &transform, 'e');
+        transform.position[0] += 50;
+        debug_draw_char(&square, &transform, 'l');
+        transform.position[0] += 50;
+        debug_draw_char(&square, &transform, 'l');
+        transform.position[0] += 50;
+        debug_draw_char(&square, &transform, 'o');
+        transform.position[0] -= 200;
+        //texture_bind(&texture, 0);
+        //render_mesh(&square, &matrix); 
         
         glfwSwapBuffers(window);
         glfwPollEvents();

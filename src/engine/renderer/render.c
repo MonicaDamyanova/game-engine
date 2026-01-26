@@ -121,6 +121,7 @@ bool render_init(GLFWwindow* window) {
 
     // Init default shaders
     state.shader_default = render_shader_create("../shaders/default.vert", "../shaders/default.frag");
+    //state.shader_default = render_shader_create("../shaders/debug_font.vert", "../shaders/debug_font.frag");
 
     glm_ortho(0.0f, (float) state.width, 0.0f, (float) state.height, -2.0f, 2.0f, state.projection);
 
@@ -187,17 +188,16 @@ void render_upload_mesh(Mesh * mesh, float * vertices, uint32_t * indices, uint3
 }
 
 void render_mesh(Mesh * mesh, mat4 * transform) {
-    vec4 colour = {1, 1, 1, 0};
-
     glUniformMatrix4fv(glGetUniformLocation(state.shader_default, "model"), 1, GL_FALSE, transform[0][0]);
-    glUniform4fv(glGetUniformLocation(state.shader_default, "color"), 1, colour);
 
     glBindVertexArray(mesh->vao);
-    
-    //glBindTexture(GL_TEXTURE_2D, state.texture_colour);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-
     glBindVertexArray(0);
+}
+
+void render_mesh_uv(Mesh * mesh, mat4 * transform, vec4 uv_rect) {
+    glUniform4fv(glGetUniformLocation(state.shader_default, "uniform_UVs"), 1, uv_rect);
+    render_mesh(mesh, transform);
 }
 
 uint32_t render_get_height() {
