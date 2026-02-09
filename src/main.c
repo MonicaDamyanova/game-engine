@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
     // Render initialization
     render_init(window); 
     input_init(window); 
-    debug_font_init();
+    //debug_font_init();
     
     glfwSwapInterval(0); // Toggle for vsync
 
@@ -66,16 +66,23 @@ int main(int argc, char* argv[]) {
     INFO("Initialized Square");
 
     Transform2D transform = {
+        .position = {50, 1200},
+        .scale = {25, 25},
+        .rotation = 0.0
+    };
+
+    Transform2D transform_img = {
         .position = {500, 500},
-        .scale = {50, 50},
+        .scale = {100, 100},
         .rotation = 0.0
     };
 
     mat4 matrix;
 
     Texture texture = texture_load("../assets/TEST_Fox-001.png");
-
+    
     printf("%s", memory_usage_str());
+    char fps [20] = "FPS: ";
 
     while (!glfwWindowShouldClose(window))
     {
@@ -89,32 +96,26 @@ int main(int argc, char* argv[]) {
         frames++; 
 
         if (delta >= 1) {
-            printf("FPS: %d\n", frames);
+            //printf("FPS: %d\n", frames);
+            sprintf(fps,"FPS: %d", frames);
             delta--;
             frames = 0;
-            printf("%s", memory_usage_str());
+            //printf("%s", memory_usage_str());
         }
 
         // Update state =================================================== //
-        //transform.rotation += 1 * dt;
-        //transform_matrix(&transform, matrix);
+        transform_img.rotation += 1 * dt;
+        transform_matrix(&transform_img, matrix);
 
         // Rendering ====================================================== //
         glClearColor(0.6, 0.6, 0.6, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        debug_draw_char(&square, &transform, 'H');
-        transform.position[0] += 50;
-        debug_draw_char(&square, &transform, 'e');
-        transform.position[0] += 50;
-        debug_draw_char(&square, &transform, 'l');
-        transform.position[0] += 50;
-        debug_draw_char(&square, &transform, 'l');
-        transform.position[0] += 50;
-        debug_draw_char(&square, &transform, 'o');
-        transform.position[0] -= 200;
-        //texture_bind(&texture, 0);
-        //render_mesh(&square, &matrix); 
+        render_shader_use(DEFAULT_SHADER);
+        texture_bind(&texture, 0);
+        render_mesh(&square, matrix); 
+
+        //debug_draw_string(&square, &transform, fps);
         
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -129,3 +130,4 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+

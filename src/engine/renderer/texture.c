@@ -32,12 +32,16 @@ Texture texture_load(const char * path) {
     INFO("Number of channels: %d", texture.channels);
     GLenum format = GL_RED;
     if (texture.channels == 3) format = GL_RGB;
-    else if (texture.channels == 4) format = GL_RED;
+    else if (texture.channels == 4) format = GL_RGBA;
+
+    INFO("Format: %d", format);
 
     glTexImage2D(GL_TEXTURE_2D, 0, format, texture.width, texture.height, 0, format, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free(data);
+
+    DEBUG("Texture ref: %d", texture.ref);
 
     return texture;
 }

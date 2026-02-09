@@ -4,12 +4,12 @@ layout (location = 1) in vec2 aUVs;
 
 out vec2 UVs;
 
-uniform mat4 projection;
-uniform mat4 model; // Moving and orientation
+uniform mat4 u_projection;
+uniform mat4 u_model; // Moving and orientation
 // uniform mat4 view; // Moving the camera
 
 void main()
 {
     UVs = aUVs;
-    gl_Position = projection * model * vec4(aPos, 1.0);
+    gl_Position = u_projection * u_model * vec4(aPos, 1.0);
 }
