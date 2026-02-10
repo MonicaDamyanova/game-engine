@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
 
     Transform2D transform = {
         .position = {50, 1200},
-        .scale = {25, 25},
+        .scale = {20, 20},
         .rotation = 0.0
     };
 
@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
     Texture texture = texture_load("../assets/TEST_Fox-001.png");
     
     printf("%s", memory_usage_str());
-    char fps [20] = "FPS: ";
+    char fps [20] = "FPS:";
 
     while (!glfwWindowShouldClose(window))
     {
@@ -97,7 +97,7 @@ int main(int argc, char* argv[]) {
 
         if (delta >= 1) {
             //printf("FPS: %d\n", frames);
-            sprintf(fps,"FPS: %d", frames);
+            sprintf(fps,"FPS:%d", frames);
             delta--;
             frames = 0;
             //printf("%s", memory_usage_str());
@@ -106,6 +106,8 @@ int main(int argc, char* argv[]) {
         // Update state =================================================== //
         transform_img.rotation += 1 * dt;
         transform_matrix(&transform_img, matrix);
+
+        transform.position[1] = render_get_height() - 50;
 
         // Rendering ====================================================== //
         glClearColor(0.6, 0.6, 0.6, 1);
