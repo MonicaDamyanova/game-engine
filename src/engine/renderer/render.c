@@ -212,7 +212,6 @@ void render_upload_mesh(Mesh * mesh, float * vertices, uint32_t * indices, uint3
 }
 
 void render_mesh(Mesh * mesh, mat4 transform) {
-    //glUniformMatrix4fv(glGetUniformLocation(state.shader_default, "model"), 1, GL_FALSE, transform[0][0]);
     render_shader_set_uniform_m4(state.active_shader, "u_projection", state.projection);
     render_shader_set_uniform_m4(state.active_shader, "u_model", transform);
 
@@ -222,7 +221,6 @@ void render_mesh(Mesh * mesh, mat4 transform) {
 }
 
 void render_mesh_uv(Mesh * mesh, mat4 transform, vec4 uv_rect) {
-    //glUniform4fv(glGetUniformLocation(state.shader_default, "uniform_UVs"), 1, uv_rect);
     render_shader_set_uniform_v4(state.active_shader, "u_UVs", uv_rect);
     render_mesh(mesh, transform);
 }
@@ -230,10 +228,6 @@ void render_mesh_uv(Mesh * mesh, mat4 transform, vec4 uv_rect) {
 // UNIFORMS ========================================================================= //
 
 int32_t shader_uniform_validation(ShaderHandle handle, const char * name) {
-    //GLint current_program;
-    //glGetIntegerv(GL_CURRENT_PROGRAM, &current_program); 
-    //if (state.shaders[state.active_shader-1].program != current_program) {
-
     if (handle != state.active_shader) {
         ERROR("The requested shader is not bound!");
         return -1;
@@ -272,13 +266,6 @@ void render_shader_set_uniform_m4(ShaderHandle handle, const char * name, mat4 v
 }
 
 // UNIFORMS END ===================================================================== //
-
-//void render_use_default_shader() {
-//    glUseProgram(state.shaders[DEFAULT_SHADER].program);
-    //glUniform1i(glGetUniformLocation(state.shader_default, "textureID"), 0);
-    //glDisable(GL_BLEND);
-//    glEnable(GL_DEPTH_TEST);
-//}
 
 uint32_t render_get_height() {
     return state.height;

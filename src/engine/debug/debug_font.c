@@ -63,12 +63,7 @@ void debug_draw_char(Mesh * mesh, Transform2D * t, char c) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     texture_bind(&(font.texture), 0);
-    //glUniform1i(glGetUniformLocation(font.shader_default, "textureID"), 0);
-    //glUniform4fv(glGetUniformLocation(font.shader_default, "colour"), 1, colour);
-    //glUniformMatrix4fv(glGetUniformLocation(font.shader_default, "model"), 1, GL_FALSE, &matrix[0][0]);
-    //glUniform4fv(glGetUniformLocation(font.shader_default, "uniform_UVs"), 1, UVs);
     render_shader_set_uniform_v4(font.shader_default, "u_colour", colour);
-
     render_mesh_uv(mesh, matrix, UVs);
 }
 
