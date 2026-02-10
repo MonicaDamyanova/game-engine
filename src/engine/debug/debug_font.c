@@ -52,21 +52,24 @@ void debug_draw_char(Mesh * mesh, Transform2D * t, char c) {
    
     //DEBUG("Created UVs: %f, %f, %f, %f", UVs[0], UVs[1], UVs[2], UVs[3]);
 
+    render_shader_use(DEFAULT_SHADER+1);
     mat4 matrix;
     transform_matrix(t, matrix);
-  
-    //glUseProgram(font.shader_default); 
-    
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glDisable(GL_DEPTH_TEST);
 
-    //texture_bind(&(font.texture), 0);
+    render_shader_use(font.shader_default);
+  
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    texture_bind(&(font.texture), 0);
     //glUniform1i(glGetUniformLocation(font.shader_default, "textureID"), 0);
     //glUniform4fv(glGetUniformLocation(font.shader_default, "colour"), 1, colour);
     //glUniformMatrix4fv(glGetUniformLocation(font.shader_default, "model"), 1, GL_FALSE, &matrix[0][0]);
     //glUniform4fv(glGetUniformLocation(font.shader_default, "uniform_UVs"), 1, UVs);
-    //render_mesh_uv(mesh, &matrix, UVs);
+    render_shader_set_uniform_v4(font.shader_default, "u_colour", colour);
+
+    render_mesh_uv(mesh, matrix, UVs);
 }
 
 void debug_draw_string(Mesh * mesh, Transform2D * base, const char *text) {

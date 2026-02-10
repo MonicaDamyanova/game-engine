@@ -35,14 +35,14 @@ uint32_t render_shader_create(const char* path_vert, const char* path_frag) {
     int success;
     char log[512];
 
-    INFO("Attempt reading %s.", path_vert);
+    //INFO("Attempt reading %s.", path_vert);
     File file_vertex = io_file_read(path_vert);
-    INFO("Completed io_file_read successfully.");
+    INFO("Completed io_file_read for %s successfully.", path_vert);
     if (!file_vertex.is_valid) {
         FATAL("Error reading shader: %s\n", path_vert);
         return 0;
     }
-    INFO("Successfully read %s.", path_vert);
+    //INFO("Successfully read %s.", path_vert);
 
     uint32_t vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, (const char* const *)&file_vertex, NULL);
@@ -56,6 +56,7 @@ uint32_t render_shader_create(const char* path_vert, const char* path_frag) {
     }
 
     File file_fragment = io_file_read(path_frag);
+    INFO("Completed io_file_read for %s successfully.", path_frag);
     if (!file_fragment.is_valid) {
         FATAL("Error reading shader: %s", path_frag);
         return 0;
@@ -212,6 +213,7 @@ void render_upload_mesh(Mesh * mesh, float * vertices, uint32_t * indices, uint3
 
 void render_mesh(Mesh * mesh, mat4 transform) {
     //glUniformMatrix4fv(glGetUniformLocation(state.shader_default, "model"), 1, GL_FALSE, transform[0][0]);
+    render_shader_set_uniform_m4(state.active_shader, "u_projection", state.projection);
     render_shader_set_uniform_m4(state.active_shader, "u_model", transform);
 
     glBindVertexArray(mesh->vao);

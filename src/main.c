@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
     // Render initialization
     render_init(window); 
     input_init(window); 
-    //debug_font_init();
+    debug_font_init();
     
     glfwSwapInterval(0); // Toggle for vsync
 
@@ -115,7 +115,7 @@ int main(int argc, char* argv[]) {
         texture_bind(&texture, 0);
         render_mesh(&square, matrix); 
 
-        //debug_draw_string(&square, &transform, fps);
+        debug_draw_string(&square, &transform, fps);
         
         glfwSwapBuffers(window);
         glfwPollEvents();
